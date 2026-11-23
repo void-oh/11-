@@ -35,7 +35,9 @@ from sklearn.metrics import f1_score, accuracy_score
 dt = DecisionTreeClassifier(random_state = 42)
 dt_param_grid = {
     'criterion' : ['gini','entropy'],
-    'max_depth' : [3,7],
+
+    'max_depth' : [5,10,15],
+
     'min_samples_leaf' : [1,5,20]
 }
 dt_grid = GridSearchCV(
