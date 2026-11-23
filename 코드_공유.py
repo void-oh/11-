@@ -35,7 +35,9 @@ from sklearn.metrics import f1_score, accuracy_score
 dt = DecisionTreeClassifier(random_state = 42)
 dt_param_grid = {
     'criterion' : ['gini','entropy'],
+
     'max_depth' : [5,10,15],
+
     'min_samples_leaf' : [1,5,20]
 }
 dt_grid = GridSearchCV(
@@ -66,4 +68,32 @@ plt.show()
 
 ####### B 작업자 작업 수행 #######
 
-''' 코드 작성 바랍니다 '''
+from xgboost import XGBClassifier
+from sklearn.metrics import f1_score, accuracy_score
+
+xgb = XGBClassifier(random_state=42)
+
+param_grid_xgb = {
+    'max_depth': [3, 6, 9],
+    'n_estimators': [100, 300],
+    'learning_rate': [0.1, 0.05]
+}
+
+grid_xgb = GridSearchCV(
+    estimator=xgb,
+    param_grid=param_grid_xgb,
+    cv=5,
+    scoring='f1'
+)
+grid_xgb.fit(X_train, y_train)
+
+best_xgb = grid_xgb.best_estimator_
+
+importances_xgb = pd.Series(best_xgb.feature_importances_, index=X_train.columns)
+top10_xgb = importances_xgb.sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(10, 6))
+top10_xgb.sort_values().plot(kind='barh')
+plt.title('XGBoost Top 10 Feature Importances')
+plt.xlabel('Importance')
+plt.show()
